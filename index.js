@@ -18,11 +18,13 @@ const {
       useUnifiedTopology: true
     });
     const app = express();
-
+    const auth = require('./auth');
+    app.use(auth);
     const server = new ApolloServer({
       typeDefs,
       resolvers,
-      playground: true
+      playground: true,
+      context: ({ req, res }) => ({ req, res })
     });
     server.applyMiddleware({ app });
     app.listen(PORT, () =>

@@ -2,8 +2,7 @@ const { gql } = require('apollo-server-express');
 
 module.exports = gql`
   extend type Query {
-    login(email: String!, password: String!): AdminAuthData
-    admin(id: ID!): Admin
+    login(email: String!, password: String!): AdminAuthData!
     admins: [Admin!]!
   }
 
@@ -15,22 +14,23 @@ module.exports = gql`
       password: String!
       employeeID: String!
       position: String!
-      password: String!
     ): Admin
+    signOut: Boolean
   }
 
   type Admin {
-    id: ID!
+    _id: ID!
     email: String!
     firstName: String!
     lastName: String!
     position: String!
     employeeID: String!
+    orders: [Order!]!
     createdAt: String!
   }
 
   type AdminAuthData {
     token: String!
-    userId: String!
+    adminId: String!
   }
 `;
