@@ -12,6 +12,9 @@ module.exports = {
       return Order.find();
     },
     order: (root, { id }, { req }, info) => {
+      if (!req.isAuth) {
+        throw new Error('Sorry, you do not have permision to view.');
+      }
       const order = Order.findById(id);
       if (!order) {
         throw new Error('Order does not exist');

@@ -11,17 +11,17 @@ module.exports = gql`
       lastName: String!
       address: String!
       phone: String!
-      riderID: String!
       pin: String!
     ): Rider
+    removeRider(id: ID!): Boolean!
   }
   type Rider {
-    id: ID!
-    fname: String!
-    lname: String!
+    _id: ID!
+    firstName: String!
+    lastName: String!
     address: String!
     phone: String!
-    riderID: String!
+    riderId: String!
     orders: [Order!]!
     creator: Admin!
     createdAt: String!

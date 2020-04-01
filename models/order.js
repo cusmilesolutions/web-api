@@ -12,11 +12,8 @@ const orderSchema = new Schema(
     startPt: String,
     deliveryPt: String,
     description: String,
-    status: {
-      type: String,
-      default: 'pending'
-    },
-    creator: Schema.Types.ObjectId
+    status: { type: String, default: 'pending' },
+    creator: { type: Schema.Types.ObjectId, ref: 'Admin' }
   },
   { timestamps: true }
 );
