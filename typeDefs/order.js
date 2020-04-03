@@ -4,9 +4,7 @@ module.exports = gql`
   extend type Query {
     order(id: ID!): Order
     orders: [Order!]!
-    onDeliveryOrders: [Order!]!
-    cancelledOrders: [Order!]!
-    deliveredOrders: [Order!]!
+    subOrders(status: String!): [Order!]!
   }
   extend type Mutation {
     addOrder(

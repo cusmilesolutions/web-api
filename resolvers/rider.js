@@ -7,9 +7,9 @@ const validator = require('validator');
 module.exports = {
   Query: {
     riders: (root, args, { req }, info) => {
-      if (!req.isAuth) {
-        throw new Error('Sorry, you do not have permision to view.');
-      }
+      // if (!req.isAuth) {
+      //   throw new Error('Sorry, you do not have permision to view.');
+      // }
       return Rider.find();
     },
     rider: async (root, { id }, { req }, info) => {

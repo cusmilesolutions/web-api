@@ -21,14 +21,8 @@ module.exports = {
       }
       return order;
     },
-    onDeliveryOrders: (root, args, { req }, info) => {
-      return Order.find({ status: 'approved' });
-    },
-    cancelledOrders: (root, args, { req }, info) => {
-      return Order.find({ status: 'cancelled' });
-    },
-    deliveredOrders: (root, args, { req }, info) => {
-      return Order.find({ status: 'delivered' });
+    subOrders: (root, { status }, { req }, info) => {
+      return Order.find({ status });
     }
   },
   Mutation: {
