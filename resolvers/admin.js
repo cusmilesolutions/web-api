@@ -2,6 +2,7 @@ const Admin = require('../models/admin');
 const { hash, compare } = require('bcryptjs');
 const { sign } = require('jsonwebtoken');
 const validator = require('validator');
+const { AuthenticationError } = require('apollo-server-express');
 
 module.exports = {
   Query: {
@@ -11,10 +12,13 @@ module.exports = {
       }
       return Admin.find();
     },
+  },
+  Mutation: {
     login: async (root, { email, password }, { req }, info) => {
       const admin = await Admin.findOne({ email });
       if (!admin) {
-        throw new Error('Sorry, you are not registered');
+        const error = new AuthenticationError('Sorry, email is incorrect.');
+        return error;
       }
       const pwdEqual = compare(password, admin.password);
       if (!pwdEqual) {
@@ -26,9 +30,7 @@ module.exports = {
         { expiresIn: '2h' }
       );
       return { token, adminId: admin.id };
-    }
-  },
-  Mutation: {
+    },
     signUp: async (
       root,
       { firstName, lastName, email, password, employeeID, position },
@@ -56,12 +58,10 @@ module.exports = {
         email,
         password: hashedPwd,
         employeeID,
-        position
+        position,
       });
       return await admin.save();
     },
-    signOut: async (root, args, { req }, info) => {
-      // req.session.destroy();
-    }
-  }
+    signOut: async (root, args, { req }, info) => {},
+  },
 };

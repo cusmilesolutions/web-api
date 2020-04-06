@@ -4,19 +4,16 @@ const mongoose = require('mongoose');
 const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
-
-const {
-  PORT = 5000,
-  NODE_ENV = 'development',
-  MONGO_URI = 'mongodb://localhost:27017/ecl_web'
-} = process.env;
+require('dotenv').config();
 
 (async () => {
   try {
-    mongoose.connect(MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    mongoose
+      .connect(process.env.MONGO_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      })
+      .then(() => console.log('Database connected'));
     const app = express();
     const auth = require('./auth');
     app.use(auth);
@@ -24,11 +21,12 @@ const {
       typeDefs,
       resolvers,
       playground: true,
-      context: ({ req, res }) => ({ req, res })
+      context: ({ req, res }) => ({ req, res }),
     });
     server.applyMiddleware({ app });
+    const PORT = process.env.PORT || 5000;
     app.listen(PORT, () =>
-      console.log(`http://localhost:${PORT}${server.graphqlPath}`)
+      console.log(`http://localhost:${process.env.PORT}${server.graphqlPath}`)
     );
   } catch (err) {
     console.error(err);
