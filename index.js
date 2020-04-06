@@ -8,11 +8,15 @@ require('dotenv').config();
 
 (async () => {
   try {
+    console.log(process.env);
     mongoose
-      .connect(process.env.MONGO_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      })
+      .connect(
+        `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-jw97h.mongodb.net/${process.env.MONGODB_DB}`,
+        {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        }
+      )
       .then(() => console.log('Database connected'));
     const app = express();
     const auth = require('./auth');
