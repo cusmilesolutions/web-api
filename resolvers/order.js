@@ -5,25 +5,37 @@ const validator = require('validator');
 
 module.exports = {
   Query: {
-    orders: (root, args, { req }, info) => {
-      if (!req.isAuth) {
-        throw new Error('Please sign in to continue...');
-      }
-      return Order.find();
+    orders: async (root, args, { req }, info) => {
+      // if (!req.isAuth) {
+      //   throw new Error('Please sign in to continue...');
+      // }
+      const orderList = await Order.find().sort({ createdAt: -1 });
+      return {
+        orders: orderList.map((order) => {
+          return order;
+        }),
+        totalOrders: orderList.length,
+      };
     },
     order: (root, { id }, { req }, info) => {
-      if (!req.isAuth) {
-        throw new Error('Sorry, you do not have permision to view.');
-      }
+      // if (!req.isAuth) {
+      //   throw new Error('Sorry, you do not have permision to view.');
+      // }
       const order = Order.findById(id);
       if (!order) {
         throw new Error('Order does not exist');
       }
       return order;
     },
-    subOrders: (root, { status }, { req }, info) => {
-      return Order.find({ status });
-    }
+    subOrders: async (root, { status }, { req }, info) => {
+      const orderList = await Order.find({ status });
+      return {
+        orders: orderList.map((order) => {
+          return order;
+        }),
+        totalOrders: orderList.length,
+      };
+    },
   },
   Mutation: {
     addOrder: async (
@@ -36,14 +48,14 @@ module.exports = {
         price,
         startPt,
         deliveryPt,
-        description
+        description,
       },
       { req },
       info
     ) => {
-      if (!req.isAuth) {
-        throw new Error('Please sign in to continue...');
-      }
+      // if (!req.isAuth) {
+      //   throw new Error('Please sign in to continue...');
+      // }
       if (
         validator.default.isEmpty(customer) ||
         validator.default.isEmpty(itemName) ||
@@ -73,7 +85,7 @@ module.exports = {
         startPt,
         deliveryPt,
         description,
-        creator: admin
+        creator: admin,
       });
       const createdOrder = await newOrder.save();
       admin.orders.push(createdOrder);
@@ -94,6 +106,6 @@ module.exports = {
       const order = await Order.findByIdAndUpdate(id, { status: 'delivered' });
       const cancelledOrder = await order.save();
       return cancelledOrder;
-    }
-  }
+    },
+  },
 };

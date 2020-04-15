@@ -8,7 +8,6 @@ require('dotenv').config();
 
 (async () => {
   try {
-    console.log(process.env);
     mongoose
       .connect(
         `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-jw97h.mongodb.net/${process.env.MONGODB_DB}`,

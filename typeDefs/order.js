@@ -3,8 +3,8 @@ const { gql } = require('apollo-server-express');
 module.exports = gql`
   extend type Query {
     order(id: ID!): Order
-    orders: [Order!]!
-    subOrders(status: String!): [Order!]!
+    orders: OrderList!
+    subOrders(status: String!): OrderList!
   }
   extend type Mutation {
     addOrder(
@@ -35,5 +35,10 @@ module.exports = gql`
     status: String!
     creator: Admin!
     createdAt: String!
+  }
+
+  type OrderList {
+    orders: [Order!]!
+    totalOrders: Int!
   }
 `;
