@@ -6,9 +6,6 @@ const validator = require('validator');
 module.exports = {
   Query: {
     orders: async (root, args, { req }, info) => {
-      // if (!req.isAuth) {
-      //   throw new Error('Please sign in to continue...');
-      // }
       const orderList = await Order.find().sort({ createdAt: -1 });
       return {
         orders: orderList.map((order) => {
@@ -18,9 +15,6 @@ module.exports = {
       };
     },
     order: (root, { id }, { req }, info) => {
-      // if (!req.isAuth) {
-      //   throw new Error('Sorry, you do not have permision to view.');
-      // }
       const order = Order.findById(id);
       if (!order) {
         throw new Error('Order does not exist');
@@ -41,7 +35,8 @@ module.exports = {
     addOrder: async (
       root,
       {
-        customer,
+        customerName,
+        customerPhone,
         itemName,
         itemType,
         itemCount,
@@ -53,11 +48,12 @@ module.exports = {
       { req },
       info
     ) => {
-      // if (!req.isAuth) {
-      //   throw new Error('Please sign in to continue...');
-      // }
+      if (!req.isAuth) {
+        throw new Error('Please sign in to continue...');
+      }
       if (
-        validator.default.isEmpty(customer) ||
+        validator.default.isEmpty(customerName) ||
+        validator.default.isEmpty(customerPhone) ||
         validator.default.isEmpty(itemName) ||
         validator.default.isEmpty(itemType) ||
         validator.default.isEmpty(itemCount) ||
@@ -77,7 +73,8 @@ module.exports = {
 
       const newOrder = new Order({
         orderNo,
-        customer,
+        customerName,
+        customerPhone,
         itemName,
         itemType,
         itemCount,

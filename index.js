@@ -10,7 +10,8 @@ require('dotenv').config();
   try {
     mongoose
       .connect(
-        `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-jw97h.mongodb.net/${process.env.MONGODB_DB}`,
+        'mongodb://localhost:27017/ecl-web',
+        // `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-jw97h.mongodb.net/${process.env.MONGODB_DB}`,
         {
           useNewUrlParser: true,
           useUnifiedTopology: true,

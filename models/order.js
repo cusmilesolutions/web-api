@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 const orderSchema = new Schema(
   {
     orderNo: String,
-    customer: String,
+    customerName: String,
+    customerPhone: String,
     itemName: String,
     itemType: String,
     itemCount: String,
@@ -13,7 +14,7 @@ const orderSchema = new Schema(
     deliveryPt: String,
     description: String,
     status: { type: String, default: 'pending' },
-    creator: { type: Schema.Types.ObjectId, ref: 'Admin' }
+    creator: { type: Schema.Types.ObjectId, ref: 'Admin' },
   },
   { timestamps: true }
 );

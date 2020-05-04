@@ -8,7 +8,8 @@ module.exports = gql`
   }
   extend type Mutation {
     addOrder(
-      customer: String!
+      customerName: String!
+      customerPhone: String!
       itemName: String!
       itemType: String!
       itemCount: String!
@@ -24,7 +25,8 @@ module.exports = gql`
   type Order {
     _id: ID!
     orderNo: String!
-    customer: String!
+    customerName: String!
+    customerPhone: String!
     itemName: String!
     itemType: String!
     itemCount: String!
