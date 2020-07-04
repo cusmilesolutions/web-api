@@ -19,10 +19,19 @@ module.exports = {
       if (!order) {
         throw new Error('Order does not exist');
       }
-      return order;
+      return order._doc;
     },
     subOrders: async (root, { status }, { req }, info) => {
-      const orderList = await Order.find({ status });
+      const orderList = await Order.find({ orderStatus: status });
+      return {
+        orders: orderList.map((order) => {
+          return order;
+        }),
+        totalOrders: orderList.length,
+      };
+    },
+    paymentStatus: async (root, { status }, { req }, info) => {
+      const orderList = await Order.find({ 'payment.status': status });
       return {
         orders: orderList.map((order) => {
           return order;
@@ -35,29 +44,35 @@ module.exports = {
     addOrder: async (
       root,
       {
-        customerName,
-        customerPhone,
+        senderName,
+        senderPhone,
+        recipientName,
+        recipientPhone,
         itemName,
         itemType,
         itemCount,
+        description,
         price,
+        method,
         startPt,
         deliveryPt,
-        description,
       },
       { req },
-      info
+      info,
     ) => {
       if (!req.isAuth) {
         throw new Error('Please sign in to continue...');
       }
       if (
-        validator.default.isEmpty(customerName) ||
-        validator.default.isEmpty(customerPhone) ||
+        validator.default.isEmpty(senderName) ||
+        validator.default.isEmpty(senderPhone) ||
+        validator.default.isEmpty(recipientName) ||
+        validator.default.isEmpty(recipientPhone) ||
         validator.default.isEmpty(itemName) ||
         validator.default.isEmpty(itemType) ||
         validator.default.isEmpty(itemCount) ||
         validator.default.isEmpty(price) ||
+        validator.default.isEmpty(method) ||
         validator.default.isEmpty(startPt) ||
         validator.default.isEmpty(deliveryPt)
       ) {
@@ -73,15 +88,11 @@ module.exports = {
 
       const newOrder = new Order({
         orderNo,
-        customerName,
-        customerPhone,
-        itemName,
-        itemType,
-        itemCount,
-        price,
-        startPt,
-        deliveryPt,
-        description,
+        sender: { senderName, senderPhone },
+        recipient: { recipientName, recipientPhone },
+        item: { itemName, itemCount, itemType, description },
+        payment: { price, method },
+        shipping: { startPt, deliveryPt },
         creator: admin,
       });
       const createdOrder = await newOrder.save();
@@ -90,17 +101,23 @@ module.exports = {
       return { ...createdOrder._doc, _id: createdOrder._id };
     },
     approveOrder: async (root, { id }, { req }, info) => {
-      const order = await Order.findByIdAndUpdate(id, { status: 'approved' });
+      const order = await Order.findByIdAndUpdate(id, {
+        orderStatus: 'approved',
+      });
       const approvedOrder = await order.save();
       return approvedOrder;
     },
     cancelOrder: async (root, { id }, { req }, info) => {
-      const order = await Order.findByIdAndUpdate(id, { status: 'cancelled' });
+      const order = await Order.findByIdAndUpdate(id, {
+        orderStatus: 'cancelled',
+      });
       const cancelledOrder = await order.save();
       return cancelledOrder;
     },
     deliveredOrder: async (root, { id }, { req }, info) => {
-      const order = await Order.findByIdAndUpdate(id, { status: 'delivered' });
+      const order = await Order.findByIdAndUpdate(id, {
+        orderStatus: 'delivered',
+      });
       const cancelledOrder = await order.save();
       return cancelledOrder;
     },

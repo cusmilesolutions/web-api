@@ -5,18 +5,22 @@ module.exports = gql`
     order(id: ID!): Order
     orders: OrderList!
     subOrders(status: String!): OrderList!
+    paymentStatus(status: String!): OrderList!
   }
   extend type Mutation {
     addOrder(
-      customerName: String!
-      customerPhone: String!
+      senderName: String!
+      senderPhone: String!
+      recipientName: String!
+      recipientPhone: String!
       itemName: String!
       itemType: String!
       itemCount: String!
+      description: String
       price: String!
+      method: String!
       startPt: String!
       deliveryPt: String!
-      description: String
     ): Order
     approveOrder(id: ID!): Order
     cancelOrder(id: ID!): Order
@@ -25,16 +29,13 @@ module.exports = gql`
   type Order {
     _id: ID!
     orderNo: String!
-    customerName: String!
-    customerPhone: String!
-    itemName: String!
-    itemType: String!
-    itemCount: String!
-    price: String!
-    startPt: String!
-    deliveryPt: String!
-    description: String
-    status: String!
+    item: Item
+    sender: Sender
+    recipient: Recipient
+    payment: Payment
+    shipping: Shipping
+    rider: Rider
+    orderStatus: String!
     creator: Admin!
     createdAt: String!
   }
@@ -42,5 +43,36 @@ module.exports = gql`
   type OrderList {
     orders: [Order!]!
     totalOrders: Int!
+  }
+
+  type Item {
+    itemName: String
+    itemType: String
+    itemCount: String
+    description: String
+  }
+
+  type Recipient {
+    recipientName: String
+    recipientPhone: String
+  }
+
+  type Sender {
+    senderName: String
+    senderPhone: String
+  }
+
+  type Payment {
+    price: String
+    method: String
+    status: String
+    date: String
+  }
+
+  type Shipping {
+    startPt: String
+    deliveryPt: String
+    dateDeliverd: String
+    timeDelivered: String
   }
 `;

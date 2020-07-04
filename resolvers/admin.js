@@ -15,27 +15,32 @@ module.exports = {
   },
   Mutation: {
     login: async (root, { email, password }, { req }, info) => {
+      if (!validator.default.isEmail(email))
+        throw new Error('Email is invalid.');
       const admin = await Admin.findOne({ email });
-      if (!admin) {
+      let token = null;
+      if (admin) {
+        const pwdEqual = await compare(password, admin.password);
+        if (!pwdEqual) {
+          throw new Error('Password is incorrect');
+        }
+        token = sign(
+          { userId: admin.id, email: admin.email },
+          'etokencsecretl',
+          { expiresIn: '2h' },
+        );
+      } else {
         const error = new AuthenticationError('Sorry, email is incorrect.');
         return error;
       }
-      const pwdEqual = compare(password, admin.password);
-      if (!pwdEqual) {
-        throw new Error('Password is incorrect');
-      }
-      const token = sign(
-        { userId: admin.id, email: admin.email },
-        'etokencsecretl',
-        { expiresIn: '2h' }
-      );
+
       return { token, adminId: admin.id };
     },
     signUp: async (
       root,
       { firstName, lastName, email, password, employeeID, position },
       { req },
-      info
+      info,
     ) => {
       if (
         !validator.default.isEmail(email) ||

@@ -11,7 +11,7 @@ module.exports = gql`
       lastName: String!
       address: String!
       phone: String!
-      pin: String!
+      pin: String
     ): Rider
     removeRider(id: ID!): Boolean!
   }
