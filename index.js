@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
+
 require('dotenv').config();
 
 (async () => {
@@ -19,7 +20,7 @@ require('dotenv').config();
       )
       .then(() => console.log('Database connected'));
     const app = express();
-    const auth = require('./auth');
+    const auth = require('./middlewares/auth');
     app.use(auth);
     const server = new ApolloServer({
       typeDefs,
