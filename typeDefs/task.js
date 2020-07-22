@@ -19,6 +19,7 @@ module.exports = gql`
       dueTime: String
     ): Task!
     deleteTask(id: ID): Boolean
+    completeTask(id: ID): Task!
   }
 
   type TasksList {
