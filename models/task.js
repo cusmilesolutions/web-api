@@ -11,11 +11,7 @@ const taskSchema = new Schema(
       type: String,
       required: true,
     },
-    dueDate: {
-      type: Date,
-      required: false,
-    },
-    dueTime: {
+    deadline: {
       type: String,
       required: false,
     },
@@ -27,7 +23,7 @@ const taskSchema = new Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 module.exports = mongoose.model('Task', taskSchema);

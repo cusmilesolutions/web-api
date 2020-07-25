@@ -31,7 +31,7 @@ module.exports = {
   Mutation: {
     createTask: async (
       root,
-      { title, description, dueDate, dueTime },
+      { title, description, deadline },
       { req },
       info
     ) => {
@@ -46,8 +46,7 @@ module.exports = {
       const newTask = new Task({
         title,
         description,
-        dueDate,
-        dueTime,
+        deadline,
       });
       const createdTask = await newTask.save();
 

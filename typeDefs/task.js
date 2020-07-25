@@ -12,12 +12,7 @@ module.exports = gql`
   }
 
   extend type Mutation {
-    createTask(
-      title: String
-      description: String
-      dueDate: String
-      dueTime: String
-    ): Task!
+    createTask(title: String, description: String, deadline: String): Task!
     deleteTask(id: ID): Boolean
     completeTask(id: ID): Task!
   }
@@ -31,8 +26,7 @@ module.exports = gql`
     _id: ID!
     title: String!
     description: String!
-    dueDate: String
-    dueTime: String
+    deadline: String
     status: TaskStatus
     createdAt: String!
   }
