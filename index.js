@@ -16,6 +16,10 @@ const server = new ApolloServer({
   resolvers,
   playground: true,
   context: ({ req, res }) => ({ req, res }),
+  engine: {
+    reportSchema: true,
+  },
+  introspection: true,
 });
 server.applyMiddleware({ app });
 const PORT = process.env.PORT || 5000;
