@@ -7,10 +7,9 @@ const riderSchema = new Schema(
     lastName: String,
     address: String,
     phone: String,
-    pin: String,
     riderId: String,
     orders: [{ type: Schema.Types.ObjectId, ref: 'Order' }],
-    creator: { type: Schema.Types.ObjectId, ref: 'Admin' }
+    creator: { type: Schema.Types.ObjectId, ref: 'Admin' },
   },
   { timestamps: true }
 );

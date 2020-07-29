@@ -1,15 +1,13 @@
 const Rider = require('../models/rider');
 const Admin = require('../models/admin');
-const { hash, compare } = require('bcryptjs');
-const { sign } = require('jsonwebtoken');
 const validator = require('validator');
 
 module.exports = {
   Query: {
     riders: (root, args, { req }, info) => {
-      // if (!req.isAuth) {
-      //   throw new Error('Sorry, you do not have permision to view.');
-      // }
+      if (!req.isAuth) {
+        throw new Error('Sorry, you do not have permision to view.');
+      }
       return Rider.find();
     },
     rider: async (root, { id }, { req }, info) => {
@@ -21,20 +19,19 @@ module.exports = {
         throw new Error('Rider does not exist');
       }
       return rider;
-    }
+    },
   },
   Mutation: {
     addRider: async (
       root,
-      { firstName, lastName, address, phone, pin },
+      { firstName, lastName, address, phone },
       { req },
       info
     ) => {
       if (
         validator.default.isEmpty(firstName) ||
         validator.default.isEmpty(lastName) ||
-        validator.default.isEmpty(phone) ||
-        validator.default.isEmpty(pin)
+        validator.default.isEmpty(phone)
       ) {
         throw new Error('Please fill the required spaces');
       }
@@ -50,20 +47,18 @@ module.exports = {
         throw new Error('Invalid admin id');
       }
       const riderTotal = await Rider.find().countDocuments();
-      const riderId = `RECL${riderTotal + 1}`;
+      let riderId = `RECL${riderTotal + 1}`;
       const riderIdExists = await Rider.findOne({ riderId });
       if (riderIdExists) {
         riderId = `RECL${riderTotal + Math.floor(Math.random() * 10)}`;
       }
-      const hashedPin = await hash(pin, 12);
       const rider = new Rider({
         firstName,
         lastName,
         address,
         phone,
         riderId,
-        pin: hashedPin,
-        creator: admin
+        creator: admin,
       });
       return await rider.save();
     },
@@ -73,6 +68,6 @@ module.exports = {
       }
       await Rider.findByIdAndRemove(id);
       return true;
-    }
-  }
+    },
+  },
 };

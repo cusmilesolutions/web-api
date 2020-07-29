@@ -1,5 +1,6 @@
 const Order = require('../models/order');
 const Admin = require('../models/admin');
+const Rider = require('../models/rider');
 
 const validator = require('validator');
 
@@ -58,7 +59,7 @@ module.exports = {
         deliveryPt,
       },
       { req },
-      info,
+      info
     ) => {
       if (!req.isAuth) {
         throw new Error('Please sign in to continue...');
@@ -99,6 +100,15 @@ module.exports = {
       admin.orders.push(createdOrder);
       await admin.save();
       return { ...createdOrder._doc, _id: createdOrder._id };
+    },
+    assignRider: async (root, { id, riderId }, { req }, info) => {
+      const order = await Order.findById(id);
+      const rider = await Rider.findById(riderId);
+      order.rider = rider;
+      await order.save();
+      rider.orders.push(order);
+      const assignedOrder = await rider.save();
+      return { ...assignedOrder._doc };
     },
     approveOrder: async (root, { id }, { req }, info) => {
       const order = await Order.findByIdAndUpdate(id, {

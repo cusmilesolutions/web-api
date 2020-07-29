@@ -22,6 +22,7 @@ module.exports = gql`
       startPt: String!
       deliveryPt: String!
     ): Order
+    assignRider(id: ID!, riderID: String!): Order
     approveOrder(id: ID!): Order
     cancelOrder(id: ID!): Order
     deliveredOrder(id: ID!): Order
