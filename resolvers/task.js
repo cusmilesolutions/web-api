@@ -66,8 +66,8 @@ module.exports = {
         throw new Error('Please sign in to continue...');
       }
       const task = await Task.findByIdAndUpdate(id, { status: 'completed' });
-      const completedTask = await task.save();
-      return completedTask;
+      await task.save();
+      return true;
     },
   },
 };
