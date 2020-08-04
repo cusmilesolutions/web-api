@@ -101,14 +101,18 @@ module.exports = {
       await admin.save();
       return { ...createdOrder._doc, _id: createdOrder._id };
     },
-    assignRider: async (root, { id, riderId }, { req }, info) => {
+    assignRider: async (root, { id, riderID }, { req }, info) => {
       const order = await Order.findById(id);
-      const rider = await Rider.findById(riderId);
-      order.rider = rider;
-      await order.save();
+      const rider = await Rider.findOne({ riderId: riderID }).exec();
+      if (!rider) {
+        throw new Error('Rider does not exist');
+      }
+      order.rider = rider._id;
+      order.orderStatus = 'delivered';
       rider.orders.push(order);
-      const assignedOrder = await rider.save();
-      return { ...assignedOrder._doc };
+      await rider.save();
+      const assignedOrder = await order.save();
+      return { ...assignedOrder._doc, _id: assignedOrder._id };
     },
     approveOrder: async (root, { id }, { req }, info) => {
       const order = await Order.findByIdAndUpdate(id, {
