@@ -109,7 +109,8 @@ module.exports = {
       }
       order.rider = rider._id;
       order.orderStatus = 'delivered';
-      order.shipping.deliveryDate = new Date();
+      order.shipping.dateDelivered = new Date().toLocaleDateString();
+      order.shipping.timeDelivered = new Date().toLocaleTimeString();
       rider.orders.push(order);
       await rider.save();
       const assignedOrder = await order.save();
